@@ -1,7 +1,7 @@
 package com.atalibdev.customerservice.customer;
 
 import com.atalibdev.customerservice.exception.CustomerNotFoundException;
-import com.atalibdev.customerservice.exception.DuplicationResource;
+import com.atalibdev.customerservice.exception.DuplicationResourceException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +17,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer registerCustomer(Customer customer) throws DuplicationResource {
+    public Customer registerCustomer(Customer customer) throws DuplicationResourceException {
         Optional<Customer> existingCustomer = customerRepository
                 .findByEmail(customer.getEmail());
         if (existingCustomer.isPresent())
-            throw new DuplicationResource(
+            throw new DuplicationResourceException(
                     "Customer with the given email: [%s] taken".formatted(customer.getEmail())
             );
         return customerRepository.save(customer);

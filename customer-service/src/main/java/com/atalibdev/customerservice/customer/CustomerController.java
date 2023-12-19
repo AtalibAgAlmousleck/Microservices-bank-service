@@ -1,7 +1,7 @@
 package com.atalibdev.customerservice.customer;
 
 import com.atalibdev.customerservice.exception.CustomerNotFoundException;
-import com.atalibdev.customerservice.exception.DuplicationResource;
+import com.atalibdev.customerservice.exception.DuplicationResourceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,7 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<Customer> registerCustomer(@RequestBody Customer customer) throws DuplicationResource {
+    public ResponseEntity<Customer> registerCustomer(@RequestBody Customer customer) throws DuplicationResourceException {
         Customer register = customerService.registerCustomer(customer);
         return new ResponseEntity<>(register, HttpStatus.CREATED);
     }
