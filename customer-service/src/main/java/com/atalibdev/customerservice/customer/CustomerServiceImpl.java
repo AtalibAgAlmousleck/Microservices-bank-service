@@ -1,8 +1,11 @@
 package com.atalibdev.customerservice.customer;
 
+import com.atalibdev.customerservice.exception.CustomerNotFoundException;
+import com.atalibdev.customerservice.exception.DuplicationResource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -14,12 +17,26 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer registerCustomer(Customer customer) {
-        return null;
+    public Customer registerCustomer(Customer customer) throws DuplicationResource {
+        Optional<Customer> existingCustomer = customerRepository
+                .findByEmail(customer.getEmail());
+        if (existingCustomer.isPresent())
+            throw new DuplicationResource(
+                    "Customer with the given email: [%s] taken".formatted(customer.getEmail())
+            );
+        return customerRepository.save(customer);
     }
 
     @Override
     public List<Customer> customers() {
-        return null;
+        return customerRepository.findAll();
+    }
+
+    @Override
+    public Customer findCustomer(Long customerId) throws CustomerNotFoundException {
+        return customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomerNotFoundException(
+                        "Customer with the given id: [%s] not found.".formatted(customerId)
+                ));
     }
 }
